@@ -138,6 +138,18 @@ ID and persisted data. New installations require a publicly pullable image;
 run the source release workflow and let the store updater replace the old pin
 before installing.
 
+Pending updates from the November 10, 2026 review:
+
+- [goPool v0.1.4](https://github.com/M45-Software/M45-goPool/releases/tag/v0.1.4)
+  is published, but anonymous pulls of its M45-Software image are blocked.
+  Make the package public, then rerun the store updater with its verified
+  multi-platform digest before advertising the new package as installable.
+- The persistent test helper still pins umbrelOS 1.7.4.
+  [umbrelOS 2.0.1](https://github.com/getumbrel/umbrel/releases/tag/2.0.1)
+  includes security fixes. Its container image could not be retrieved during
+  this review; verify the supported container test method, image digest, and
+  compatibility before updating the helper. No existing test installation was changed.
+
 ## Validation
 
 Run the dependency-free policy checks and render the Compose model with test
