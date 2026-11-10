@@ -2,7 +2,7 @@
 
 This is M45Core's community store for apps distributed outside Umbrel's
 official App Store. It currently packages
-[M45 goPool](https://github.com/M45Core/M45-goPool), a self-hosted solo Bitcoin
+[M45 goPool](https://github.com/M45-Software/M45-goPool), a self-hosted solo Bitcoin
 mining pool connected to the Bitcoin Node app on the same Umbrel.
 
 The step-by-step install guide, miner settings, fee disclosure, and quick
@@ -14,7 +14,7 @@ Open the App Store in umbrelOS, open its menu, choose **Community App Stores**,
 and add:
 
 ```text
-https://github.com/M45Core/M45-Umbrel-Community-App-Store
+https://github.com/M45-Software/M45-Umbrel-Community-App-Store
 ```
 
 Install **Bitcoin Node** first and keep it on mainnet. Then install **M45
@@ -113,7 +113,7 @@ For each semantic release tag, the source workflow:
 
 1. creates the GitHub release if necessary;
 2. builds `linux/amd64` and `linux/arm64` images;
-3. publishes an immutable version tag to `ghcr.io/m45core/m45-gopool`; and
+3. publishes an immutable version tag to `ghcr.io/m45-software/m45-gopool`; and
 4. dispatches the resulting multi-platform digest to this repository.
 
 This repository verifies the source tag and image digest, updates the app
@@ -125,18 +125,18 @@ workflow can also be run manually for an existing tag and package version.
 
 One-time setup:
 
-- Make the `ghcr.io/m45core/m45-gopool` package public so Umbrel can pull it.
-- Create `UMBREL_STORE_TOKEN`, a fine-grained token limited to this repository
-  with Contents read/write access. Add the same token as an Actions secret in
-  both `M45Core/M45-goPool` and this repository. The source uses it only to send
-  the `repository_dispatch` event; the store uses it to push its verified
-  metadata commit. This is required because the M45Core organization enforces
-  read-only built-in workflow tokens.
+- Make the `ghcr.io/m45-software/m45-gopool` package public so Umbrel can pull it.
+- Set `UMBREL_STORE_TOKEN` in `M45-Software/M45-goPool` to a token with
+  Contents write access to this store, so the source workflow can dispatch releases.
+- The store uses its built-in workflow token to commit package updates. If an
+  organization policy prevents that, set `UMBREL_STORE_TOKEN` in this repository
+  with Contents write access as well.
 
-The bootstrap package is pinned to RodB's multi-platform v0.3.2 image so it can
-be tested before M45Core's GHCR package exists. Running the updated source
-release workflow for `v0.1.1` replaces that bootstrap image with M45Core's own
-immutable image automatically.
+The restored package retains its existing image pin until the first verified
+release from M45-Software replaces it. Existing installations retain their app
+ID and persisted data. New installations require a publicly pullable image;
+run the source release workflow and let the store updater replace the old pin
+before installing.
 
 ## Validation
 

@@ -29,7 +29,7 @@ def run_update(app_dir: Path, umbrel_version: str) -> subprocess.CompletedProces
             "--umbrel-version",
             umbrel_version,
             "--image",
-            "ghcr.io/m45core/m45-gopool",
+            "ghcr.io/m45-software/m45-gopool",
             "--digest",
             DIGEST,
             "--release-notes-file",
@@ -69,7 +69,7 @@ def main() -> None:
         version = (app_dir / "VERSION").read_text(encoding="utf-8")
         assert 'version: "0.1.0"' in manifest
         assert "Independent version smoke test." in manifest
-        assert f"ghcr.io/m45core/m45-gopool:v0.3.5@{DIGEST}" in compose
+        assert f"ghcr.io/m45-software/m45-gopool:v0.3.5@{DIGEST}" in compose
         assert version == "v0.1.0\n"
 
         downgrade = run_update(app_dir, "0.0.9")

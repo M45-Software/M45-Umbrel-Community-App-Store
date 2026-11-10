@@ -13,7 +13,7 @@ APP_ID = "m45-gopool"
 APP = ROOT / APP_ID
 FEE_ADDRESS = "3B86bWqfjdQeLEr8nkeeWU6ygksc2K7MoL"
 PINNED_IMAGE = re.compile(
-    r"^    image: (?:ghcr\.io/m45core/m45-gopool|rodb2008com/gopool):"
+    r"^    image: (?:ghcr\.io/(?:m45core|m45-software)/m45-gopool|rodb2008com/gopool):"
     r"[^@\s]+@sha256:[0-9a-f]{64}$",
     re.MULTILINE,
 )

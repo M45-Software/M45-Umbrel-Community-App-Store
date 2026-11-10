@@ -17,7 +17,7 @@ on:
       image:
         description: GHCR image name
         required: true
-        default: ghcr.io/m45core/m45-gopool
+        default: ghcr.io/m45-software/m45-gopool
         type: string
       digest:
         description: Multi-platform sha256 image digest
@@ -25,7 +25,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
   packages: read
 
 concurrency:
@@ -36,26 +36,16 @@ jobs:
   update:
     runs-on: ubuntu-latest
     env:
-      SOURCE_REPOSITORY: M45Core/M45-goPool
+      SOURCE_REPOSITORY: M45-Software/M45-goPool
       RELEASE_TAG: ${{ github.event.client_payload.tag || inputs.tag }}
       UMBREL_VERSION: ${{ github.event.client_payload.umbrel_version || inputs.umbrel_version }}
       IMAGE_NAME: ${{ github.event.client_payload.image || inputs.image }}
       IMAGE_DIGEST: ${{ github.event.client_payload.digest || inputs.digest }}
     steps:
-      - name: Verify store write token
-        env:
-          UMBREL_STORE_TOKEN: ${{ secrets.UMBREL_STORE_TOKEN }}
-        shell: bash
-        run: |
-          if [[ -z "${UMBREL_STORE_TOKEN}" ]]; then
-            echo "Add UMBREL_STORE_TOKEN with Contents write access to this repository." >&2
-            exit 1
-          fi
-
       - name: Check out store
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          token: ${{ secrets.UMBREL_STORE_TOKEN }}
+          token: ${{ secrets.UMBREL_STORE_TOKEN || github.token }}
 
       - name: Validate release inputs
         shell: bash
@@ -68,7 +58,7 @@ jobs:
             echo "Invalid Umbrel package version: ${UMBREL_VERSION}" >&2
             exit 1
           fi
-          if [[ "${IMAGE_NAME}" != "ghcr.io/m45core/m45-gopool" ]]; then
+          if [[ "${IMAGE_NAME}" != "ghcr.io/m45-software/m45-gopool" ]]; then
             echo "Unexpected image name: ${IMAGE_NAME}" >&2
             exit 1
           fi

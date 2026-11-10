@@ -15,7 +15,7 @@ RELEASE_TAG = re.compile(
     r"(?P<suffix>(?:-[0-9A-Za-z][0-9A-Za-z.-]*)?)$"
 )
 DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
-EXPECTED_IMAGE = "ghcr.io/m45core/m45-gopool"
+EXPECTED_IMAGE = "ghcr.io/m45-software/m45-gopool"
 TOP_LEVEL_KEY = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*:")
 
 
