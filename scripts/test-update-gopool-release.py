@@ -15,7 +15,7 @@ UPDATER = ROOT / "scripts" / "update-gopool-release.py"
 DIGEST = "sha256:" + ("a" * 64)
 
 
-def run_update(app_dir: Path, umbrel_version: str) -> subprocess.CompletedProcess[str]:
+def run_update(app_dir: Path, umbrel_version: str, gallery_url: str = "") -> subprocess.CompletedProcess[str]:
     notes = app_dir.parent / "notes.md"
     notes.write_text("Independent version smoke test.\n", encoding="utf-8")
     return subprocess.run(
@@ -34,6 +34,8 @@ def run_update(app_dir: Path, umbrel_version: str) -> subprocess.CompletedProces
             DIGEST,
             "--release-notes-file",
             str(notes),
+            "--gallery-url",
+            gallery_url,
         ],
         check=False,
         capture_output=True,
@@ -60,7 +62,8 @@ def main() -> None:
         manifest_path.write_text(manifest, encoding="utf-8")
         (app_dir / "VERSION").write_text("v0.0.8\n", encoding="utf-8")
 
-        result = run_update(app_dir, "0.1.0")
+        gallery_url = "https://github.com/M45-Software/M45-goPool/releases/download/v0.3.5/umbrel-dashboard.png"
+        result = run_update(app_dir, "0.1.0", gallery_url)
         if result.returncode != 0:
             raise SystemExit(result.stderr or result.stdout)
 
@@ -71,6 +74,16 @@ def main() -> None:
         assert "Independent version smoke test." in manifest
         assert f"ghcr.io/m45-software/m45-gopool:v0.3.5@{DIGEST}" in compose
         assert version == "v0.1.0\n"
+        assert f"gallery:\n  - {gallery_url}\n" in manifest
+
+        invalid = run_update(app_dir, "0.1.1", gallery_url.replace("v0.3.5", "v0.3.4"))
+        assert invalid.returncode != 0
+        assert "gallery URL must be" in invalid.stderr
+        assert manifest_path.read_text(encoding="utf-8") == manifest
+
+        # Releases without an asset retain the existing screenshot.
+        assert run_update(app_dir, "0.1.0").returncode == 0
+        assert f"gallery:\n  - {gallery_url}\n" in manifest_path.read_text(encoding="utf-8")
 
         downgrade = run_update(app_dir, "0.0.9")
         assert downgrade.returncode != 0

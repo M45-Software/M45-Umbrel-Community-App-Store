@@ -14,6 +14,10 @@ on:
         description: Independent Umbrel package version, such as 0.1.0
         required: true
         type: string
+      gallery_url:
+        description: Optional dashboard screenshot URL from the source release
+        required: false
+        type: string
       image:
         description: GHCR image name
         required: true
@@ -39,6 +43,7 @@ jobs:
       SOURCE_REPOSITORY: M45-Software/M45-goPool
       RELEASE_TAG: ${{ github.event.client_payload.tag || inputs.tag }}
       UMBREL_VERSION: ${{ github.event.client_payload.umbrel_version || inputs.umbrel_version }}
+      GALLERY_URL: ${{ github.event.client_payload.gallery_url || inputs.gallery_url }}
       IMAGE_NAME: ${{ github.event.client_payload.image || inputs.image }}
       IMAGE_DIGEST: ${{ github.event.client_payload.digest || inputs.digest }}
     steps:
@@ -106,7 +111,8 @@ jobs:
             --umbrel-version "${UMBREL_VERSION}" \
             --image "${IMAGE_NAME}" \
             --digest "${IMAGE_DIGEST}" \
-            --release-notes-file "${RUNNER_TEMP}/gopool-release-notes.md"
+            --release-notes-file "${RUNNER_TEMP}/gopool-release-notes.md" \
+            --gallery-url "${GALLERY_URL}"
           python3 scripts/validate-store.py
 
       - name: Commit store update

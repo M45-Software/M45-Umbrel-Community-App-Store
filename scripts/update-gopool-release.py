@@ -53,7 +53,7 @@ def version_key(value: str) -> tuple[int, int, int, int, str] | None:
     )
 
 
-def update_manifest(path: Path, tag: str, release_notes: str) -> None:
+def update_manifest(path: Path, tag: str, release_notes: str, gallery_url: str = "") -> None:
     old_version = current_manifest_version(path)
     old_key = version_key(old_version)
     new_key = version_key(tag)
@@ -70,6 +70,8 @@ def update_manifest(path: Path, tag: str, release_notes: str) -> None:
     else:
         note_lines.append(f"  M45 goPool {tag}.\n")
     lines = replace_top_level_field(lines, "releaseNotes", note_lines)
+    if gallery_url:
+        lines = replace_top_level_field(lines, "gallery", ["gallery:\n", f"  - {gallery_url}\n"])
     path.write_text("".join(lines), encoding="utf-8")
 
 
@@ -107,6 +109,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--image", required=True)
     parser.add_argument("--digest", required=True)
     parser.add_argument("--release-notes-file", type=Path, required=True)
+    parser.add_argument("--gallery-url", default="")
     return parser.parse_args()
 
 
@@ -121,6 +124,12 @@ def main() -> None:
         raise SystemExit(f"unexpected image: {args.image}; expected {EXPECTED_IMAGE}")
     if DIGEST.fullmatch(args.digest) is None:
         raise SystemExit(f"invalid image digest: {args.digest}")
+
+    expected_gallery = (
+        f"https://github.com/M45-Software/M45-goPool/releases/download/{args.tag}/umbrel-dashboard.png"
+    )
+    if args.gallery_url and args.gallery_url != expected_gallery:
+        raise SystemExit("gallery URL must be the dashboard asset from this source release")
 
     app_dir = args.app_dir.resolve()
     manifest = app_dir / "umbrel-app.yml"
@@ -145,6 +154,7 @@ def main() -> None:
         manifest,
         umbrel_tag,
         args.release_notes_file.read_text(encoding="utf-8"),
+        args.gallery_url,
     )
     update_compose(compose, image_ref)
     (app_dir / "VERSION").write_text(f"{umbrel_tag}\n", encoding="utf-8")

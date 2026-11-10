@@ -63,7 +63,14 @@ def main() -> int:
             "manifest support link must open the M45 user manual", errors)
     require("Setup guide and user manual: https://m45core.com/umbrel" in manifest,
             "manifest description must show the M45 user manual", errors)
-    require("gallery: []" in manifest, "gallery must remain empty until current screenshots exist", errors)
+    gallery = re.search(r"^gallery:.*?(?=^[A-Za-z][A-Za-z0-9_-]*:|\Z)", manifest, re.MULTILINE | re.DOTALL)
+    require(gallery is not None and (
+        gallery.group(0).strip() == "gallery: []" or re.fullmatch(
+            r"gallery:\s*\n  - https://github\.com/M45-Software/M45-goPool/releases/download/"
+            r"v[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?/umbrel-dashboard\.png\s*",
+            gallery.group(0),
+        ) is not None
+    ), "gallery must be empty or contain a source-release dashboard screenshot", errors)
     require("APP_HOST: m45-gopool_server_1" in compose, "app_proxy host is incorrect", errors)
     require("APP_PORT: 8080" in compose, "app_proxy port is incorrect", errors)
     require(PINNED_IMAGE.search(compose) is not None, "server image must be tag-and-digest pinned", errors)
