@@ -3,6 +3,7 @@
 # goPool admin UI persist in data/config/config.toml across restarts/upgrades.
 
 [branding]
+  discord_url = "https://discord.gg/DeMXzu3kbA"
   fiat_currency = "usd"
   pool_donation_address = ""
   server_location = "Home LAN"
