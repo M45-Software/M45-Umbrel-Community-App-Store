@@ -132,18 +132,13 @@ One-time setup:
   organization policy prevents that, set `UMBREL_STORE_TOKEN` in this repository
   with Contents write access as well.
 
-The restored package retains its existing image pin until the first verified
-release from M45-Software replaces it. Existing installations retain their app
-ID and persisted data. New installations require a publicly pullable image;
-run the source release workflow and let the store updater replace the old pin
-before installing.
+The current package uses goPool v0.1.4 from
+`ghcr.io/m45-software/m45-gopool`, pinned to its verified multi-platform digest.
+Anonymous image access has been checked for Umbrel installations. Existing
+installations retain their app ID and persisted data.
 
 Pending updates from the November 10, 2026 review:
 
-- [goPool v0.1.4](https://github.com/M45-Software/M45-goPool/releases/tag/v0.1.4)
-  is published, but anonymous pulls of its M45-Software image are blocked.
-  Make the package public, then rerun the store updater with its verified
-  multi-platform digest before advertising the new package as installable.
 - The persistent test helper still pins umbrelOS 1.7.4.
   [umbrelOS 2.0.1](https://github.com/getumbrel/umbrel/releases/tag/2.0.1)
   includes security fixes. Its container image could not be retrieved during

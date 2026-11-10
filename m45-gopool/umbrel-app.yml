@@ -2,7 +2,7 @@ manifestVersion: 1
 id: m45-gopool
 category: bitcoin
 name: M45 goPool
-version: "0.1.1"
+version: "0.1.4"
 tagline: Run a private solo Bitcoin mining pool
 description: >-
   M45 goPool connects your miners directly to your Umbrel Bitcoin Node and
@@ -30,19 +30,56 @@ icon: https://raw.githubusercontent.com/M45-Software/M45-goPool/main/data/M45COR
 gallery: []
 path: ""
 releaseNotes: |-
-  ## What's Changed
-  * Version bits by @Distortions81 in https://github.com/M45-Software/M45-goPool/pull/27
-  * 4-27 fixes by @Distortions81 in https://github.com/M45-Software/M45-goPool/pull/30
-  * Increase dropdown menu z index by @trcjr in https://github.com/M45-Software/M45-goPool/pull/29
-  * Add Docker/Compose deployment support and publish container images to GHCR by @trcjr in https://github.com/M45-Software/M45-goPool/pull/28
-  
-  ## New Contributors
-  * @trcjr made their first contribution in https://github.com/M45-Software/M45-goPool/pull/29
-  
-  **Full Changelog**: https://github.com/M45-Software/M45-goPool/commits/v0.1.1
-  
-  
-  Full release: https://github.com/M45-Software/M45-goPool/releases/tag/v0.1.1
+  ## goPool v0.1.4
+
+  This release brings more reliable miner notifications, a Bitcoin-library migration, refreshed benchmarks, security updates, and the restored Umbrel community store.
+
+  ### Discord miner monitoring
+
+  - **Catch connected miners that stop mining.** Worker activity now uses recent share submissions rather than an open connection or a lingering historical hashrate.
+  - **Clearer alerts.** Messages distinguish disconnected miners from connected miners with no recent shares, and report when mining resumes.
+  - **Handle short mining sessions correctly.** A sustained outage can trigger an alert even if the miner was only briefly active beforehand.
+  - **Keep shared worker names accurate.** Any connection submitting recent shares keeps that saved worker active.
+  - **Preserve notification state during temporary database errors.** Failed subscription or saved-worker reads are logged instead of being treated as empty lists.
+  - **Correct notification instructions.** `/notify-start` now describes the configured thresholds instead of hard-coding two minutes. It also explains the five-minute warm-up and the roughly ten-minute no-share alert delay with default settings.
+  - Add regression tests for share activity, connected-but-idle miners, workers already offline when monitoring starts, and temporary worker-store errors.
+
+  ### Bitcoin libraries and supporting services
+
+  - Upgrade **btcd from 0.25.0 to 0.27.0** and migrate address handling, payout scripts, transaction/block types, and network parameters to the versioned Bitcoin packages.
+  - Adapt wallet, coinbase, block-validity, SegWit, Taproot, and compatibility tests to the updated APIs.
+  - Update SQLite from **1.56.0 to 1.62.0**, Backblaze support from **0.7.2 to 0.9.0**, Clerk from **2.7.0 to 2.8.0**, and Sonic from **1.15.2 to 1.15.5**.
+  - Refresh cryptography, networking, and other supporting dependencies.
+
+  ### Benchmarks and reproducibility
+
+  - Add **Erikslund** to the default comparison suite alongside goPool, pogolo, CKPool, WarpPool, and public-pool.
+  - Publish the **October 25 benchmark results**, raw measurements, execution log, and regenerated heat map for 100, 1,000, and 10,000 miners.
+  - Add Erikslund health checks, configuration, and a no-ZMQ polling setup.
+  - Update the benchmark harness upstream and fix refreshing its disposable checkout after generated overlays have modified tracked files.
+
+  ### Security, builds, and checks
+
+  - Move Docker builds and release checks to **Go 1.27.3**, including the x509 security fix. The minimum Go version for source builds is now **1.26.10**.
+  - Update pinned Docker/GitHub Actions and the Playwright version used for release screenshots.
+  - Run automated Go tests and vulnerability checks on release tags.
+  - The full local Go test suite, GitHub release tests, and vulnerability checks passed for v0.1.4.
+
+  ### Umbrel and community links
+
+  - Restore the community store at [M45-Software/M45-Umbrel-Community-App-Store](https://github.com/M45-Software/M45-Umbrel-Community-App-Store), retaining the app ID and persisted installation data.
+  - Point release dispatch and the image namespace at **M45-Software**.
+  - Update the companion store to accept dashboard screenshots from the matching source release and use its built-in workflow token for package updates when permitted.
+  - Update the website's default GitHub link, Discord invite, and Umbrel guide/store links.
+
+  [GitHub](https://github.com/M45-Software/M45-goPool) · [Discord](https://discord.gg/DeMXzu3kbA) · [Umbrel setup guide](https://m45core.com/umbrel)
+
+  **Availability:** The source release and publicly pullable amd64/arm64 images are available. The Umbrel store packages v0.1.4 with a verified image digest. Website link changes require deployment; existing saved link settings may also need updating.
+
+  **Full changelog:** https://github.com/M45-Software/M45-goPool/compare/v0.1.3...v0.1.4
+
+
+  Full release: https://github.com/M45-Software/M45-goPool/releases/tag/v0.1.4
 defaultUsername: ""
 defaultPassword: ""
 backupIgnore:
