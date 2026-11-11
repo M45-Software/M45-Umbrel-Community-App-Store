@@ -61,7 +61,7 @@ server-oriented 50,000-connection default.
 ## Persistent Umbrel test container
 
 The included helper follows Umbrel's current privileged-container test method,
-pins umbrelOS `1.7.4` by digest, and uses a named Docker volume. It is intended
+pins umbrelOS `2.0.1` by digest, and uses a named Docker volume. It is intended
 to be a long-lived test Umbrel where you can sync a Bitcoin node and connect
 physical miners—not an automatically discarded test fixture.
 
@@ -93,7 +93,10 @@ Useful commands:
 
 `stop`, `start`, `restart`, host reboots, and `recreate` preserve the named data
 volume. Unless you intentionally stop it, the container resumes after a Docker
-daemon or host restart. The only command that deletes the Umbrel install,
+daemon or host restart. Changing the default image does not replace an existing
+container: `start` resumes its current image. `recreate` uses the configured
+image and preserves the volume; migration from an older OS is a separate check.
+The only command that deletes the Umbrel install,
 Bitcoin chain, and app data is the deliberately explicit:
 
 ```bash
@@ -101,7 +104,7 @@ Bitcoin chain, and app data is the deliberately explicit:
 ```
 
 The test method is based on Umbrel's
-[official app testing guide](https://github.com/getumbrel/umbrel-apps/blob/master/.claude/skills/umbrel-test-app/SKILL.md).
+[official app testing guide](https://github.com/getumbrel/umbrel-apps/blob/master/.agents/skills/umbrel-test-app/SKILL.md).
 It is known to work on Linux and OrbStack; other Docker Desktop or WSL setups
 may need host-specific changes for systemd, privileged containers, or host
 networking.
@@ -137,13 +140,14 @@ The current package uses goPool v0.1.4 from
 Anonymous image access has been checked for Umbrel installations. Existing
 installations retain their app ID and persisted data.
 
-Pending updates from the November 10, 2026 review:
-
-- The persistent test helper still pins umbrelOS 1.7.4.
-  [umbrelOS 2.0.1](https://github.com/getumbrel/umbrel/releases/tag/2.0.1)
-  includes security fixes. Its container image could not be retrieved during
-  this review; verify the supported container test method, image digest, and
-  compatibility before updating the helper. No existing test installation was changed.
+The umbrelOS 2.0.1 helper was checked on Linux amd64 with a separate fresh
+container and data volume: Umbrel and nested Docker started, the welcome page
+rendered, and a data marker survived both restart and container recreation.
+SSH could not bind the host's occupied port 22, and NVIDIA/ZFS kernel-module
+services could not load modules for the host kernel. These container checks do
+not verify physical-device behavior, app installation, or migration of an
+existing 1.7.4 data volume. Containers use the host kernel; this helper update
+does not install Umbrel's kernel security fixes on the Docker host.
 
 ## Validation
 

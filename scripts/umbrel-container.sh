@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-readonly DEFAULT_IMAGE="ghcr.io/getumbrel/umbrelos:1.7.4@sha256:99e2e1c4493a53ddc471909e4d0f54c12a3ec80af644f6f9f8f6f050d032b95a"
+readonly DEFAULT_IMAGE="ghcr.io/getumbrel/umbrelos:2.0.1@sha256:beced44fb3b31f44330785619d93b7ee34ceb6c8e638e765375f1d3ab406a299"
 readonly CONTAINER_NAME="${UMBREL_CONTAINER_NAME:-m45-umbrel-test}"
 readonly DATA_VOLUME="${UMBREL_DATA_VOLUME:-m45-umbrel-test-data}"
 readonly UMBREL_IMAGE="${UMBREL_IMAGE:-${DEFAULT_IMAGE}}"
